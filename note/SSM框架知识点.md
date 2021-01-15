@@ -1,8 +1,8 @@
 # SSM框架知识点
 
-### 1.必备知识点
+## 1.必备知识点
 
-#### 1.1 JDBC连接池之C3P0
+### 1.1 JDBC连接池之C3P0
 
 ```
 1.步骤：
@@ -94,7 +94,7 @@ c3p0.password=123456
     }
 ```
 
-#### 1.2 JDBC连接池之druid
+### 1.2 JDBC连接池之druid
 
 ```
 1. 步骤：
@@ -173,7 +173,7 @@ asyncInit=true
     }
 ```
 
-#### 1.3 JdbcTemplate常用方法执行CRUD
+### 1.3 JdbcTemplate常用方法执行CRUD
 
 ##### update()：增、删、改
 
@@ -277,9 +277,11 @@ asyncInit=true
 	Account account = jdbcTemplate.queryForObject("select * from account where name=?", new BeanPropertyRowMapper<Account>(Account.class), "tom");
 ```
 
-### 2.Spring 入门
+## 2.Spring 
 
-##### 2.1：概念
+### 1.Spring入门
+
+#### 1.1：概念
 
 ```
 1.JAR包的分类
@@ -306,7 +308,7 @@ asyncInit=true
 
 ```
 
-##### 2.2：maven方式搭建Spring框架步骤（xml方式）
+#### 1.2：maven方式搭建Spring框架步骤（xml方式）
 
 ###### 1.Maven工程的pom.xml文件中导入 Spring 开发的基本包坐标
 
@@ -409,9 +411,9 @@ public class SpringDemoTest {
 }
 ```
 
-### 3.Spring 的配置文件
+### 2.Spring 的配置文件
 
-##### 3.1 Bean 对象的创建（实例化）
+#### 2.1 Bean 对象的创建（实例化）
 
 ###### 1.使用无参构造方法实例化
 
@@ -514,7 +516,7 @@ public class MyFactoryBean implements FactoryBean<Person> {
 <bean id="myfactorybean" class="com.mashibing.factory.MyFactoryBean"></bean>
 ```
 
-##### 3.2 Bean 对象的获取
+#### 2.2 Bean 对象的获取
 
 ###### 1.通过 bean 的 id 获取对象
 
@@ -556,7 +558,7 @@ bean对象获取：
 		Person person = context.getBean("person", Person.class);
 ```
 
-##### 3.3 Bean 对象的属性赋值方式
+#### 2.3 Bean 对象的属性赋值方式
 
 ###### 1.通过 构造器 给 bean对象 赋值
 
@@ -832,7 +834,7 @@ bean对象在创建的时候是按照bean在配置文件的顺序决定的，也
 <bean id="person" class="com.mashibing.bean.Person"></bean>
 ```
 
-##### 3.4 Bean对象的作用范围
+#### 2.4 Bean对象的作用范围
 
 scope:指对象的作用范围，取值如下： 
 
@@ -874,7 +876,7 @@ scope:指对象的作用范围，取值如下：
 <bean id="person4" class="com.mashibing.bean.Person" scope="prototype"></bean>
 ```
 
-##### 3.5 Bean 对象的初始化和销毁方法
+#### 2.5 Bean 对象的初始化和销毁方法
 
 ```xml
 <!--bean生命周期表示bean的创建到销毁
@@ -887,7 +889,7 @@ scope:指对象的作用范围，取值如下：
     <bean id="address" class="com.mashibing.bean.Address" init-method="init" destroy-method="destory"></bean>
 ```
 
-##### 3.6  Bean 对象初始化方法 的 前后处理方法
+#### 2.6  Bean 对象初始化方法 的 前后处理方法
 
 ​	spring中包含一个BeanPostProcessor的接口，可以在bean的初始化方法的前后调用该方法，如果配置了初始化方法的前置和后置处理器，无论是否包含初始化方法，都会进行调用。
 
@@ -928,7 +930,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 }
 ```
 
-##### 3.7 引用外部配置文件
+#### 2.7 引用外部配置文件
 
 ###### 0.添加 context 命名空间
 
@@ -994,7 +996,7 @@ driverClassName=com.mysql.jdbc.Driver
 
 ```
 
-##### 3.8 Spring 基于 xml 文件的自动装配
+#### 2.8 Spring 基于 xml 文件的自动装配
 
 ​	当一个对象中需要引用另外一个对象的时候，在之前的配置中我们都是通过property标签来进行手动配置的，其实在spring中还提供了一个非常强大的功能就是自动装配，可以按照我们指定的规则进行配置，配置的方式有以下几种：
 
@@ -1023,7 +1025,7 @@ driverClassName=com.mysql.jdbc.Driver
 </beans>
 ```
 
-##### 3.9 SpEL的使用
+#### 2.9 SpEL的使用
 
 SpEL:Spring Expression Language,spring的表达式语言，支持运行时查询操作对象
 
@@ -1044,13 +1046,9 @@ SpEL:Spring Expression Language,spring的表达式语言，支持运行时查询
     </bean>
 ```
 
-### 4. Spring 配置数据库连接池
+### 3. Spring 注解开发
 
-​	参考 3.7.2
-
-### 5. Spring 注解开发
-
-##### 1.原始注解
+#### 3.1 原始注解
 
 Spring原始注解主要是替代<Bean>的配置
 
@@ -1068,7 +1066,7 @@ Spring原始注解主要是替代<Bean>的配置
 | @PostConstruct | 使用在方法上标注该方法是Bean的初始化方法       |
 | @PreDestroy    | 使用在方法上标注该方法是Bean的销毁方法         |
 
-##### 2.使用注解的步骤
+#### 3.2 使用注解的步骤
 
 ```xml
 <!--
@@ -1105,7 +1103,7 @@ application-context.xml
 </beans>    
 ```
 
-##### 3.原始注解的使用
+#### 3.3 原始注解的使用
 
 使用 @Component 或 @Repository 标识UserDaoImpl需要Spring进行实例化。
 
@@ -1186,7 +1184,7 @@ public void destroy(){
 }
 ```
 
-##### 4.定义扫描包时要包含的类和不要包含的类
+#### 3.4 定义扫描包时要包含的类和不要包含的类
 
 ###### 1.定义要包含的类
 
@@ -1262,7 +1260,7 @@ public void destroy(){
 </beans>
 ```
 
-##### 5.@AutoWired进行自动注入的注意点：
+#### 3.5 @AutoWired进行自动注入的注意点：
 
 ```
 注意：当使用AutoWired注解的时候，自动装配的时候是根据 类型 实现的。
@@ -1281,7 +1279,7 @@ public void destroy(){
 	2、这个方法的每一个参数都会自动注入值。
 ```
 
-##### 6.自动装配注解：@AutoWired 和 @Resoure 的区别：
+#### 3.6 自动装配注解：@AutoWired 和 @Resoure 的区别：
 
 ```
 1、@AutoWired:是spring中提供的注解，@Resource:是jdk中定义的注解，依靠的是java的标准。
@@ -1289,7 +1287,7 @@ public void destroy(){
 3、@AutoWired只适合spring框架，而@Resource扩展性更好。
 ```
 
-##### 7.Spring的新注解
+#### 3.7 Spring的新注解
 
 | 注解            | 说明                                                         |
 | --------------- | ------------------------------------------------------------ |
@@ -1332,9 +1330,9 @@ public DataSource getDataSource() throws PropertyVetoException {
 } 
 ```
 
-### 6.Spring整合Junit
+### 4.Spring整合Junit
 
-##### 6.1 原始Junit测试Spring的问题
+#### 4.1 原始Junit测试Spring的问题
 
 在测试类中，每个测试方法都有以下两行代码：
 
@@ -1345,13 +1343,13 @@ public DataSource getDataSource() throws PropertyVetoException {
 
 这两行代码的作用是获取容器，如果不写的话，直接会提示空指针异常。所以又不能轻易删掉。
 
-##### 6.2 上述问题解决思路
+#### 4.2 上述问题解决思路
 
 让SpringJunit负责创建Spring容器，但是需要将配置文件的名称告诉它。
 
 将需要进行测试Bean直接在测试类中进行注入。
 
-##### 6.3 Spring集成Junit步骤
+#### 4.3 Spring集成Junit步骤
 
 ①导入spring集成Junit的坐标
 
@@ -1363,7 +1361,7 @@ public DataSource getDataSource() throws PropertyVetoException {
 
 ⑤创建测试方法进行测试
 
-##### 6.4 Spring集成Junit代码实现
+#### 4.4 Spring集成Junit代码实现
 
 ①导入spring集成Junit的坐标
 
@@ -1432,9 +1430,9 @@ public class SpringJunitTest {
 }
 ```
 
-### 7.Spring AOP
+### 5.Spring AOP
 
-##### 1.概念
+#### 5.1 概念
 
 ```
 AOP 为 Aspect Oriented Programming 的缩写，意思为面向切面编程。
@@ -1449,7 +1447,7 @@ AOP 为 Aspect Oriented Programming 的缩写，意思为面向切面编程。
 	在运行期间，Spring通过 动态代理技术 动态的生成代理对象，代理对象方法执行时进行增强功能的介入，在去调用目标对象的方法，从而完成功能的增强。
 ```
 
-##### 2.AOP的动态代理技术
+#### 5.2 AOP的动态代理技术
 
 ```
 常用的动态代理技术：
@@ -1457,7 +1455,7 @@ AOP 为 Aspect Oriented Programming 的缩写，意思为面向切面编程。
 	cglib 代理：基于父类的动态代理技术。
 ```
 
-##### 3.JDK代理
+#### 5.3 JDK代理
 
 1.目标类接口
 
@@ -1561,7 +1559,7 @@ TargetInterface proxy = TargetProxy.getProxy(new Target());
 proxy.method();
 ```
 
-##### 4.CGLIB代理
+#### 5.4 CGLIB代理
 
 1.目标类
 
@@ -1594,7 +1592,7 @@ Target proxy1 = (Target) enhancer.create(); //创建代理对象
 proxy1.method();
 ```
 
-##### 5.AOP相关术语
+#### 5.5 AOP相关术语
 
 ###### 术语：
 
@@ -1652,7 +1650,7 @@ proxy1.method();
 	它可以选择是否 继续执行连接点 或 直接返回自定义的返回值 又或 抛出异常将执行结束。
 ```
 
-##### 6.应用场景
+#### 5.6 应用场景
 
 ```
 - 日志管理
@@ -1661,9 +1659,9 @@ proxy1.method();
 - 事务控制
 ```
 
-##### 7.基于Spring的AOP开发
+#### 5.7 基于Spring的AOP开发
 
-###### 0.注意点
+##### 0.注意点
 
 ```
 在spring容器中：
@@ -1671,7 +1669,7 @@ proxy1.method();
 	如果没有接口，会使用cglib的动态代理；代理对象是 $$EnhancerBySpringCGLIB$$ 类型。
 ```
 
-###### 1.导入 AOP 相关坐标
+##### 1.导入 AOP 相关坐标
 
 ```xml
 <!--导入spring的context坐标，context依赖aop-->
@@ -1689,7 +1687,7 @@ proxy1.method();
 </dependency>
 ```
 
-###### 2.创建目标接口和目标类（内部有切点）
+##### 2.创建目标接口和目标类（内部有切点）
 
 **2.1:有接口，使用JDK代理**
 
@@ -1725,7 +1723,7 @@ public class Target {
 }
 ```
 
-###### 3.创建切面类（内部有增强方法）
+##### 3.创建切面类（内部有增强方法）
 
 ```java
 public class MyAspect {
@@ -1736,7 +1734,7 @@ public class MyAspect {
 }
 ```
 
-###### 4.将目标类和切面类的对象创建权交给 spring
+##### 4.将目标类和切面类的对象创建权交给 spring
 
 **4.1:XML方式**
 
@@ -1764,7 +1762,7 @@ public class MyAspect {
 3.在Target 和 MyAspect类上添加 @Repository 注解
 ```
 
-###### 5.在 applicationContext.xml 中配置织入关系
+##### 5.在 applicationContext.xml 中配置织入关系
 
 **5.1:XML方式**
 
@@ -1799,7 +1797,7 @@ public class MyAspect {
 }
 ```
 
-###### 6.测试代码
+##### 6.测试代码
 
 **6.1:XML方式**
 
@@ -1932,14 +1930,14 @@ execution( public int com.mashibing.inter.MyCalculator.*(..)) && execution(* *.*
 execution(!public int com.mashibing.inter.MyCalculator.*(..))
 ```
 
-##### 8.通知方法的执行顺序
+#### 5.8 通知方法的执行顺序
 
 ```
 1、正常执行：@Before--->@After--->@AfterReturning
 2、异常执行：@Before--->@After--->@AfterThrowing
 ```
 
-##### 9.获取 待增强方法 的详细信息
+#### 5.9 获取 待增强方法 的详细信息
 
 ###### 获取方法的信息
 
@@ -1995,13 +1993,13 @@ public class MyAspect {
 }
 ```
 
-##### 10.spring对通知方法的要求
+#### 5.10 spring对通知方法的要求
 
 ```
 	spring对于通知方法的要求并不是很高，你可以任意改变方法的返回值和方法的访问修饰符，但是唯一不能修改的就是方法的参数，会出现参数绑定的错误，原因在于通知方法是spring利用反射调用的，每次方法调用得确定这个方法的参数的值。
 ```
 
-##### 11.表达式的抽取
+#### 5.11 表达式的抽取
 
 如果在实际使用过程中，多个方法的表达式是一致的话，那么可以考虑将切入点表达式抽取出来：
 
@@ -2040,7 +2038,7 @@ public class MyAspect {
 }
 ```
 
-##### 12.环绕通知的使用
+#### 5.12 环绕通知的使用
 
 ```java
 @Repository
@@ -2066,7 +2064,7 @@ public class MyAspectAround {
 
 ```
 
-##### 13.通知的执行顺序
+#### 5.13 通知的执行顺序
 
 ###### 一个切面类：
 
@@ -2082,3 +2080,572 @@ public class MyAspectAround {
 	在spring中，默认是按照切面类名称的字典顺序进行执行的，但是如果想自己改变具体的执行顺序的话，可以使用@Order注解来解决，数值越小，优先级越高。
 ```
 
+### 6. Spring 配置 JdbcTemplate
+
+#### 6.1 导入坐标
+
+```xml
+<!-- 用于数据库连接 -->
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.6</version>
+</dependency>
+
+<!-- 使用jdbc可以封装一些操作 -->
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>5.3.2</version>
+</dependency>
+
+<!-- druid的数据库连接池,不同的数据库连接池导入的包不同-->
+<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.4</version>
+</dependency>
+
+```
+
+#### 6.2 在resource目录下创建 jdbc.properties
+
+和spring的配置文件分离开，有利于后期维护
+
+```properties
+jdbc.driver=com.mysql.jdbc.Driver
+#前提是已创建好数据库及对应表
+jdbc.url=jdbc:mysql://localhost:3306/ssm
+jdbc.username=root
+jdbc.password=root
+```
+
+#### 6.3 在spring核心文件 applicationContext.xml 中添加相应的bean
+
+```xml
+<!--加载jdbc.properties-->
+<context:property-placeholder location="classpath:jdbc.properties"/>
+
+<!--druid 数据源对象-->
+<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+    <property name="username" value="${jdbc.username}"></property>
+    <property name="password" value="${jdbc.password}"></property>
+    <property name="url" value="${jdbc.url}"></property>
+    <property name="driverClassName" value="${jdbc.driver}"></property>
+</bean>
+
+<!--jdbc模板对象-->
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="dataSource"/>
+</bean>
+
+<!--** 具备具名函数的jdbcTemplate对象 **-->
+<!-- 
+	区别：JDBC用法中，SQL参数是用占位符？表示，并且受到位置的限制，一旦参数的位置发生变化，必须改变参数的绑定。
+		 SQL具名参数是按照名称绑定，而不是位置绑定。
+	具名参数只在 SImpleJdbcTemplate 和 NamedParameterJdbcTemplate 中得到支持。
+-->
+<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg name="dataSource" ref="dataSource"></constructor-arg>
+</bean>
+```
+
+#### 6.4 测试运行
+
+###### XML方式
+
+```java
+public class test_jdbc {
+
+    @Test
+    public void run(){
+
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        JdbcTemplate jdbcTemplate = (JdbcTemplate)context.getBean("jdbcTemplate");
+
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select * from account");
+        for (Map<String, Object> map : maps) {
+            System.out.println(map);
+        }
+        
+        //具名jdbcTemplate的使用
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate  = (NamedParameterJdbcTemplate)context.getBean("namedParameterJdbcTemplate");
+        String sql = "insert into account(name,money) values(:name,:money)";
+        //以Map类型
+        Map<String,Object> map = new HashMap<>();
+        map.put("name","zhang");
+        map.put("money",120.2);
+        int update = namedParameterJdbcTemplate.update(sql, map);
+
+        //以Bean对象
+        Account account = new Account();
+        account.setMoney(115);
+        account.setName("yu");
+        //把类对象转换为参数类型
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(account);
+        update = namedParameterJdbcTemplate.update(sql, paramSource);
+        System.out.println(update);
+    }
+}
+
+```
+
+###### 注解方式
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext.xml")
+public class test_jdbc {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Test
+    public void run(){
+
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select * from account");
+        for (Map<String, Object> map : maps) {
+            System.out.println(map);
+        }
+    }
+}
+
+```
+
+### 7.声明式事务
+
+#### 7.1 事务的分类
+
+###### 编程式事务
+
+```
+在代码中直接加入处理事务的逻辑，可能需要在代码中显式调用beginTransaction()、commit()、rollback()等事务管理相关的方法。
+```
+
+###### 声明式事务：基于Spring-AOP
+
+```
+在方法的外部添加注解或者直接在配置文件中定义，将事务管理代码从业务方法中分离出来，以声明的方式来实现事务管理。spring的AOP恰好可以完成此功能：事务管理代码的固定模式作为一种横切关注点，通过AOP方法模块化，进而实现声明式事务。
+```
+
+#### 7.2 声明式事务的配置
+
+###### XML
+
+在spring核心配置文件applicationContext.xml下：
+
+```xml
+<!-- 事务配置,需要有dataSource的Bean对象 -->
+<!--1.平台事务管理器-->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"></property>
+</bean>
+
+<!--2.事务增强配置-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <tx:method name="*"/>
+    </tx:attributes>
+</tx:advice>
+
+<!--3.事务的aop增强，将切入点表达式和事务通知联系起来-->
+<aop:config>
+    <aop:pointcut id="myPointcut" expression="execution(* cn.yurb.aop.*.*(..))"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"></aop:advisor>
+</aop:config>
+```
+
+###### 注解
+
+```xml
+<!-- 1.配置事务管理器，事务依赖于数据源所产生的连接对象，只有连接对象创建成功了才能够处理事务 -->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"></property>
+</bean>
+
+<!-- 2.开启注解驱动，即对事务相关的注解进行扫描，解析含义并执行功能 -->
+<tx:annotation-driven transaction-manager="transactionManager"/>
+
+<!--3.在需要开启事务的方法上加上 @Transactional 注解-->
+```
+
+#### 7.3 事务配置的属性
+
+```java
+isolation：设置事务的隔离级别
+propagation：事务的传播行为
+noRollbackFor：那些异常事务可以不回滚
+noRollbackForClassName：填写的参数是全类名
+rollbackFor：哪些异常事务需要回滚
+rollbackForClassName：填写的参数是全类名
+readOnly：设置事务是否为只读事务		
+timeout：事务超出指定执行时长后自动终止并回滚,单位是秒
+```
+
+#### 7.4 超时属性
+
+防止长期运行的事务占用资源，事务在超过超时时间后，会强制回滚到之前。
+
+###### XML
+
+```xml
+<!-- 事务配置,需要有dataSource的Bean对象 -->
+<!--1.平台事务管理器-->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"></property>
+</bean>
+
+<!--2.事务增强配置-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <!--以check开头的方法，都受到事务控制，这里设置超时时间为3，单位为S-->
+		<tx:method name="check*" timeout="3"/>
+    </tx:attributes>
+</tx:advice>
+
+<!--3.事务的aop增强，将切入点表达式和事务通知联系起来-->
+<aop:config>
+    <aop:pointcut id="myPointcut" expression="execution(* cn.yurb.aop.*.*(..))"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"></aop:advisor>
+</aop:config>
+```
+
+```java
+@Service
+public class Method {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void check(){
+
+        jdbcTemplate.update("update account set money = 666 where id = 1");
+        
+        //当check()方法里睡眠4S再执行sql语句时，会因为超时而导致全部回滚。设置金额为666也会失败。
+        try{
+            Thread.sleep(4000);
+        }catch (Exception e){
+
+        }
+        
+        jdbcTemplate.update("update account set money = 999 where id = 1");
+
+    }
+
+}
+```
+
+###### 注解
+
+注解方式的 applicationContext.xml 配置和 8.2.注解 一样
+
+```java
+//设置超时时间为3S
+@Transactional(timeout = 3)
+public void check_aop(){
+
+    jdbcTemplate.update("update account set money = 666 where id = 1");
+    try{
+        Thread.sleep(2000);
+    }catch (Exception e){
+
+    }
+    jdbcTemplate.update("update account set money = 999 where id = 1");
+
+}
+```
+
+#### 7.5 事务只读属性
+
+​		如果你一次执行单条查询语句，则没有必要启用事务支持，数据库默认支持SQL执行期间的读一致性；
+
+​		如果你一次执行多条查询语句，例如统计查询，报表查询，在这种场景下，多条查询SQL必须保证整体的读一致性，否则，在前条SQL查询之后，后条SQL查询之前，数据被其他用户改变，则该次整体的统计查询将会出现读数据不一致的状态，此时，应该启用事务支持。
+
+​		对于只读查询，可以指定事务类型为readonly，即只读事务。由于只读事务不存在数据的修改，因此数据库将会为只读事务提供一些优化手段.
+
+###### XML
+
+```xml
+<!--其他配置 或 Check()方法 参考 超时属性 -->
+<!--2.事务增强配置-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <!--以check开头的方法，都受到事务控制。
+			这里设置超时时间为3，单位为S。
+			设置只读属性为true。
+		-->
+		<tx:method name="check*" timeout="3" read-only="true"/>
+    </tx:attributes>
+</tx:advice>
+```
+
+###### 注解
+
+注解方式的 applicationContext.xml 配置和 8.2.注解 一样
+
+```java
+//设置超时时间为3S,只读属性设置为true
+@Transactional(timeout = 3,readOnly = true)
+```
+
+#### 7.6 设置异常不回滚
+
+注意：运行时异常默认回滚，编译时异常默认不回滚。
+
+###### XML
+
+```xml
+<!--其他配置 或 Check()方法 参考 超时属性 -->
+<!--2.事务增强配置-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <!--以check开头的方法，都受到事务控制。
+			这里设置超时时间为3，单位为S。
+			设置只读属性为true。
+		-->
+		<tx:method name="check*" timeout="3" read-only="true" no-rollback-for="java.lang.ArithmeticException"/>
+    </tx:attributes>
+</tx:advice>
+```
+
+###### 注解
+
+```java
+//ArithmeticException.class 除0异常  NullPointerException.class 空指针异常 
+@Transactional(timeout = 3,noRollbackFor = {ArithmeticException.class,NullPointerException.class})
+
+//ArithmeticException.class 除0异常 
+@Transactional(timeout = 3,noRollbackForClassName = {"java.lang.ArithmeticException"})
+```
+
+#### 7.7 设置异常回滚
+
+###### XML
+
+```xml
+
+
+<!--其他配置 或 Check()方法 参考 超时属性 -->
+<!--2.事务增强配置-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <!--以check开头的方法，都受到事务控制。
+			这里设置超时时间为3，单位为S。
+			设置只读属性为true。
+		-->
+		<tx:method name="check*" timeout="3" read-only="true" no-rollback-for="java.lang.ArithmeticException" rollback-for="全限定类名"/>
+    </tx:attributes>
+</tx:advice>
+```
+
+###### 注解
+
+```java
+@Transactional(timeout = 3,rollbackFor = {FileNotFoundException.class})
+```
+
+#### 7.8 设置隔离级别
+
+| 隔离级别 | 异常情况 | 异常情况   | 异常情况 |
+| -------- | -------- | ---------- | -------- |
+| 读未提交 | 脏读     | 不可重复读 | 幻读     |
+| 读已提交 |          | 不可重复读 | 幻读     |
+| 可重复读 |          |            | 幻读     |
+| 序列化   |          |            |          |
+
+```
+读未提交(Read uncommitted)：一个事务可以读取另一个未提交事务的数据，最低级别。
+						任何情况都无法保证。
+读已提交(Read committed)：一个事务要等另一个事务提交后才能读取数据。
+						可避免脏读的发生。
+可重复读(Repeatable read)：就是在开始读取数据（事务开启）时，不再允许修改操作。
+						可避免脏读、不可重复读的发生。
+串行(Serializable)：是最高的事务隔离级别，在该级别下，事务串行化顺序执行。
+						可以避免脏读、不可重复读与幻读。
+	  串行的特点：效率低下，比较耗数据库性能；
+				强制事务排序，使之不可能相互冲突，从而解决幻读问题。
+				简言之,它是在每个读的 数据行 上加上共享锁。
+                能导致大量的超时现象和锁竞争。	
+```
+
+MySQL数据库默认的隔离级别是 可重复读。
+
+###### 脏读
+
+```
+原因：读取到了其他事务没有提交的数据。
+```
+
+###### 不可重复读
+
+```
+原因：有一个事务需要读两次数据，因为一个事务只能读取到已提交的数据。
+	 当读完第一次时，同时有另一个事务改变了数据，并提交；
+	 当前事务第二次读取时，就会出现数据和上次不一样。
+	 即同一个事务中多次读取数据出现不一致的情况。
+```
+
+###### 幻读
+
+```
+原因：一个事务在读取数据时，另一个事务插入或修改了数据，导致上个事务第二次读取数据时，数据不一致。
+```
+
+###### 不可重复读和幻读的区别
+
+```
+不可重复读的重点是修改；
+幻读的重点是在于新增或删除。
+```
+
+#### 7.9 事务的7种传播特性
+
+传播行为：如果在开始当前事务之前，一个事务上下文已经存在，此时可以指定一个事务性方法的执行行为。
+
+![事务的传播特性](G:\GitResp\java\note\SSM\事务的传播特性.png)
+
+###### PROPAGATION_REQUIRED=0
+
+```
+如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
+	无父事务时：子事务作为独立事务执行。
+	有父事务时：子事务中的操作串入父事务中执行，并且一起提交，一个操作失败全部回滚。
+```
+
+###### PROPAGATION_SUPPORTS=1
+
+```
+如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。
+	无父事务时：以非事务方式执行
+	有父事务时：加入父事务执行，等同于PROPAGATION_REQUIRED
+```
+
+###### PROPAGATION_MANDATORY=2
+
+```
+如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。
+	无父事务时：抛出异常
+	有父事务时：加入父事务执行，等同于PROPAGATION_REQUIRED
+```
+
+###### PROPAGATION_REQUIRES_NEW=3
+
+```
+创建一个新的事务，如果当前存在事务，则把当前事务挂起。
+	挂起(Suspend)：通知TransactionManager不再检查某事务的状态，直到Resume
+
+	无父事务时：子事务新建事务作为独立事务执行
+	有父事务时：子事务新建事务作为独立事务执行，独立提交；
+	
+注意点：
+例：
+    T1{
+
+      O(A);
+
+      T2{
+        O(B);
+
+        O(C); 
+      };
+
+      O(D); 
+    };
+
+子事务T2不受父事务T1回滚的影响，但仍作为T1的子逻辑,
+O(D)失败，O(A)回滚，T2中的事务不回滚；
+T2失败回滚，T1捕获异常后，可以选择提交或回滚，未捕获异常，同T2一起回滚。
+```
+
+###### NOT_SUPPORTED=4
+
+```
+以非事务方式运行，如果当前存在事务，则把当前事务挂起。
+	无父事务时：以非事务方式执行。
+	有父事务时：挂起父事务，自己按照无事务方式运行。
+	
+  子事务自身无回滚，出现异常若向上抛，可能导致父事务回滚。
+  父事务回滚时，不会影响子事务。
+```
+
+###### NEVER=5
+
+```
+以非事务方式运行，如果当前存在事务，则抛出异常。
+	无父事务时：以非事务方式执行。
+	有父事务时：抛出异常(若不处理会导致父事务回滚)。
+```
+
+###### NESTED=6
+
+```
+如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行
+	无父事务时：创建独立事务，等同于PROPAGATION_REQUIRED
+	有父事务时：嵌套在父事务之内
+	
+子事务依赖父事务：子事务于父事务提交时提交；父事务回滚，子事务也回滚。
+Savepoint：子事务回滚时，父事务不回滚
+```
+
+###### 图解
+
+![事务的传播特性图解](G:\GitResp\java\note\SSM\事务的传播特性图解.png)
+
+# 3.SpringMVC
+
+### 1.具体执行流程
+
+​	当发起请求时被前置的控制器拦截到请求，根据请求参数生成代理请求，找到请求对应的实际控制器，控制器处理请求，创建数据模型，访问数据库，将模型响应给中心控制器，控制器使用模型与视图渲染视图结果，将结果返回给中心控制器，再将结果返回给请求者。
+
+![springmvc运行流程](G:\GitResp\java\note\SSM\springmvc运行流程.jpg)
+
+```
+1.用户发出请求，前端控制器DispatcherServlet接收请求并拦截请求。
+2.DispatcherServlet调用 处理器映射器HandlerMapping。HandlerMapping根据请求url查找Handler。
+3.处理器映射器找到具体的处理器(可以根据xml配置、注解进行查找)，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。
+4.DispatcherServlet调用HandlerAdapter处理器适配器，让其按照特定的规则去执行Handler。
+5.HandlerAdapter经过适配调用具体的处理器(Controller，也叫后端控制器)。
+6.Controller将具体的执行信息返回给HandlerAdapter,如ModelAndView。
+7.HandlerAdapter将Controller执行结果ModelAndView返回给DispatcherServlet。
+8.DispatcherServlet调用视图解析器(ViewResolver)来解析HandlerAdapter传递的逻辑视图名(ModelAndView)。
+9.视图解析器(ViewResolver)将解析的逻辑视图名(具体的View)传给DispatcherServlet。
+10.DispatcherServlet根据视图解析器解析的视图结果，调用具体的视图，进行视图渲染。
+11.DispatcherServlet将响应数据返回给客户端。
+```
+
+### 2.SpringMVC组建解析
+
+###### 1.**前端控制器：DispatcherServlet**
+
+​    用户请求到达前端控制器，它就相当于 MVC 模式中的 C，DispatcherServlet 是整个流程控制的中心，由
+
+它调用其它组件处理用户的请求，DispatcherServlet 的存在降低了组件之间的耦合性。
+
+###### 2.**处理器映射器：HandlerMapping**
+
+​    HandlerMapping 负责根据用户请求找到 Handler 即处理器，SpringMVC 提供了不同的映射器实现不同的
+
+映射方式，例如：配置文件方式，实现接口方式，注解方式等。
+
+###### 3.**处理器适配器：HandlerAdapter**
+
+​    通过 HandlerAdapter 对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理
+
+器进行执行。
+
+###### 4.**处理器：Handler**
+
+​    它就是我们开发中要编写的具体业务控制器。由 DispatcherServlet 把用户请求转发到 Handler。由
+
+Handler 对具体的用户请求进行处理。
+
+###### 5.**视图解析器：View Resolver**
+
+​    View Resolver 负责将处理结果生成 View 视图，View Resolver 首先根据逻辑视图名解析成物理视图名，即具体的页面地址，再生成 View 视图对象，最后对 View 进行渲染将处理结果通过页面展示给用户。
+
+###### 6.**视图**
+
+​    SpringMVC 框架提供了很多的 View 视图类型的支持，包括：jstlView、freemarkerView、pdfView等。最常用的视图就是 jsp。一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面。

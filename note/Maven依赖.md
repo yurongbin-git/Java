@@ -30,6 +30,7 @@
 
 ```xml
 <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<!-- 使用@RunWith、@ContextConfiguration 注解 -->
 <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-test</artifactId>
@@ -55,6 +56,47 @@
     <artifactId>junit</artifactId>
     <version>4.13.1</version>
     <scope>compile</scope>
+</dependency>
+```
+
+
+
+
+
+### 数据库相关依赖
+
+##### 数据库连接
+
+```xml
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.6</version>
+</dependency>
+```
+
+##### Jdbc封装
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>5.3.2</version>
+</dependency>
+```
+
+##### 数据库连接池
+
+###### druid
+
+```xml
+<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.4</version>
 </dependency>
 ```
 
