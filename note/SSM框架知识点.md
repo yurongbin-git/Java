@@ -2594,7 +2594,7 @@ Savepoint：子事务回滚时，父事务不回滚
 
 ![事务的传播特性图解](G:\GitResp\java\note\SSM\事务的传播特性图解.png)
 
-# 3.SpringMVC
+## 3.SpringMVC
 
 ### 1.具体执行流程
 
@@ -2646,6 +2646,1989 @@ Handler 对具体的用户请求进行处理。
 
 ​    View Resolver 负责将处理结果生成 View 视图，View Resolver 首先根据逻辑视图名解析成物理视图名，即具体的页面地址，再生成 View 视图对象，最后对 View 进行渲染将处理结果通过页面展示给用户。
 
-###### 6.**视图**
+###### 6.**视图**：View
 
 ​    SpringMVC 框架提供了很多的 View 视图类型的支持，包括：jstlView、freemarkerView、pdfView等。最常用的视图就是 jsp。一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面。
+
+### 3.基于XML的SpringMVC开发流程
+
+###### 1.pom.xml导入依赖
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+<!-- spring依赖 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>5.3.2</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+<!-- SpringMVC依赖 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>5.3.3</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+<!-- servlet-api依赖 -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+</dependency>
+```
+
+###### 2.web.xml添加配置
+
+1.配置DispatcherServlet
+
+2.匹配servlet的请求，/标识匹配所有请求
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    
+    <!--配置DispatcherServlet-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--关联配置文件，用于初始化时加载-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+    </servlet>
+    <!--匹配servlet的请求，/标识匹配所有请求-->
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--/*和/都是拦截所有请求，/会拦截的请求不包含*.jsp,而/*的范围更大，还会拦截*.jsp这些请求-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+</web-app>
+```
+
+###### 3.创建控制器类，需要实现Controller接口
+
+```java
+public class FirstController implements Controller {
+
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+        //创建模型和视图对象
+        ModelAndView mv = new ModelAndView();
+        //将需要的值传递到model中
+        mv.addObject("msg","helloSpringMVC");
+        //设置要跳转的视图 index.jsp页面
+        mv.setViewName("index");
+        return mv;
+    }
+}
+```
+
+###### 4.applicationContext.xml文件配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+		 http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--处理映射器-->
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"></bean>
+    <!--处理器适配器-->
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>
+
+    <!--视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+         <!--前缀后缀和 mv.setViewName("index") 拼接起来使用;-->
+        <!--配置前缀-->
+        <property name="prefix" value="/"></property>
+        <!--配置后缀-->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <bean id="/first" class="cn.yurb.Controller.FirstController"></bean>
+
+</beans>
+```
+
+### 4.基于注解的SpringMVC开发流程
+
+###### 1.pom.xml导入依赖
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+<!-- spring依赖 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>5.3.2</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+<!-- SpringMVC依赖 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>5.3.3</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+<!-- servlet-api依赖 -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+</dependency>
+```
+
+###### 2.web.xml添加配置
+
+1.配置DispatcherServlet
+
+2.匹配servlet的请求，/标识匹配所有请求
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    
+    <!--配置DispatcherServlet-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--关联配置文件，用于初始化时加载-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+    </servlet>
+    <!--匹配servlet的请求，/标识匹配所有请求-->
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--/*和/都是拦截所有请求，/会拦截的请求不包含*.jsp,而/*的范围更大，还会拦截*.jsp这些请求-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+</web-app>
+```
+
+###### 3.创建控制器类，需要实现Controller接口
+
+```java
+//添加@Controller注解
+@Controller
+public class HelloController{
+    /*
+    * @RequestMapping就是用来标识此方法用来处理什么请求，其中的/可以取消
+    * 取消后默认也是从当前项目的根目录开始查找，一般在编写的时候看个人习惯
+    * 同时，@RequestMapping也可以用来加在类上，
+    * */
+    @RequestMapping("/hello")
+    public String hello(Model model){
+        model.addAttribute("msg","hello,SpringMVC");
+        return "hello";
+    }
+}
+```
+
+###### 4.applicationContext.xml文件配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--自动扫描包，由IOC容器进行控制管理-->
+    <context:component-scan base-package="cn.yurb"></context:component-scan>
+    <!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          id="internalResourceViewResolver">
+        <!-- 前缀 -->
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <!-- 后缀 -->
+        <property name="suffix" value=".jsp" />
+    </bean>
+</beans>
+```
+
+### 5.配置细节
+
+###### 1.web.xml之 <Servlet> 配置前端过滤器
+
+```xml
+<!--配置DispatcherServlet-->
+<servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!--关联配置文件，用于初始化时加载-->
+    <!-- 
+		细节1：<init-param>元素可选：
+			如果<init-param>元素存在并且通过其子元素配置了SpringMVC的路径，则应用程序在启动时会加载配置路径下的配置文件；
+			如果没有<init-param>元素，则应用程序会默认到WEB-INF目录下寻找 名称-servlet.xml(格式)的文件。
+  	-->
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </init-param>
+    <!--1表示容器在启动时立即加载Servlet-->
+    <!-- 
+		细节2：<load-on-startup>元素可选：
+			如果<load-on-startup>元素的值为1，则在应用程序启动时会立即加载该Servlet;
+			如果<load-on-startup>元素不存在，则应用程序会在第一个Servlet请求时加载该Servlet.
+ 	-->
+    <load-on-startup>1</load-on-startup>
+</servlet>
+```
+
+###### 2.web.xml之 <url-pattern>url-pattern
+
+```xml
+<!--匹配servlet的请求，/标识匹配所有请求-->
+<servlet-mapping>
+    <servlet-name>springmvc</servlet-name>
+    <!--/*和/都是拦截所有请求，/会拦截的请求不包含*.jsp,而/*的范围更大，还会拦截*.jsp这些请求-->
+    <!-- 
+		细节：tomcat下也有一个web.xml文件，所有的项目下web.xml文件都需要继承此web.xml。
+     		在服务器的web.xml文件中有一个DefaultServlet用来处理静态资源，url-pattern是/。
+     		而我们在自己的配置文件中如果添加了url-pattern=/会覆盖父类中的url-pattern，
+				此时在请求的时候DispatcherServlet会去controller中做匹配，找不到则直接报404。
+
+			为什么能处理jsp？
+     		在父web.xml(tomcat的web.xml)文件中包含了一个JspServlet的处理，由tomcat进行处理，而不是我们定义的DispatcherServlet。
+ 	-->
+    <url-pattern>/</url-pattern>
+</servlet-mapping>
+```
+
+###### 3.注解方式之RequestMapping
+
+```java
+/**
+@RequestMapping
+作用：
+	用于建立请求 URL 和处理请求方法之间的对应关系。
+
+位置：
+	类上，请求URL 的第一级访问目录。此处不写的话，就相当于应用的根目录。
+	方法上，请求 URL 的第二级访问目录，与类上的使用@ReqquestMapping标注的一级目录一起组成访问虚拟路径。
+	注：在整个项目的不同方法上不能包含相同的@RequsetMapping值。
+
+属性：
+	value：用于指定请求的URL。它和path属性的作用是一样的。
+	method：用于指定请求的方式：POST GET。
+	params：表示请求要接受的参数,如果定义了这个属性，那么发送的时候必须要添加参数。
+         params有几种匹配规则：
+          1、直接写参数的名称，param1,param2
+              params = {"username"}
+          2、表示请求不能包含的参数，！param1
+              params = {"!username"}
+          3、表示请求中需要要包含的参数但是可以限制值 param1=values  param1!=value
+              params = {"username=123","age"}
+              params = {"username!=123","age"}
+	headers:填写请求头信息。
+          chrome：User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36
+          firefox:User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:73.0) Gecko/20100101 Firefox/73.0
+	consumers:只接受内容类型是哪种的请求，相当于指定Content-Type。
+	produces:返回的内容类型 Content-Type：text/html;charset=utf-8。
+
+通配符支持：
+	@Request包含三种模糊匹配的方式，分别是：
+    ？：能替代任意一个字符
+    *: 能替代任意多个字符和一层路径
+    **：能代替多层路径
+    @RequestMapping(value = "/**/h*llo?")
+    public String hello5(){
+        System.out.println("hello5");
+        return "hello";
+    }
+*/
+```
+
+### 6.@PathVariable注解
+
+​	如果需要在请求路径中的参数像作为参数应该怎么使用呢？
+
+​	可以使用@PathVariable注解，此注解就是提供了对占位符URL的支持，就是将URL中占位符参数绑定到控制器处理方法的参数中。
+
+```java
+@Controller
+public class HelloController{
+
+    //当参数和占位符一致时
+    @RequestMapping(value = "/pathVariable/{name}")
+    public String pathVariable(@PathVariable String name){
+        System.out.println(name);
+        return "hello";
+    }
+    
+    //当参数和占位符不一致时
+    @RequestMapping(value = "/pathVariable/{id}")
+    public String pathVariable(@PathVariable("id") String name){
+        System.out.println(name);
+        return "hello";
+    } 
+}
+```
+
+### 7.REST风格
+
+##### 原因：
+
+```
+人话：我们在获取资源的时候就是进行增删改查的操作，如果是原来的架构风格，需要发送四个请求，分别是：
+
+查询：localhost:8080/query?id=1
+增加：localhost:8080/insert
+删除：localhost:8080/delete?id=1
+更新：localhost:8080/update?id=1
+
+按照此方式发送请求的时候比较麻烦，需要定义多种请求，而在HTTP协议中，有不同的发送请求的方式，分别是GET、POST、PUT、DELETE等，我们如果能让不同的请求方式表示不同的请求类型就可以简化我们的查询
+
+GET：获取资源   		/book/1	
+POST：新建资源		/book
+PUT：更新资源		/book/1
+DELETE：删除资源		/book/1
+
+问题：
+	我们在发送请求的时候只能发送post或者get，没有办法发送put和delete请求。
+```
+
+##### 解决：
+
+###### 1.新建RestController.java类
+
+```java
+@Controller
+public class RestController {
+    @RequestMapping(value = "/user",method = RequestMethod.POST)
+    public String add(){
+        System.out.println("添加");
+        return "success";
+    }
+
+    @RequestMapping(value = "/user/{id}",method = RequestMethod.DELETE)
+    public String delete(@PathVariable("id") Integer id){
+        System.out.println("删除："+id);
+        return "success";
+    }
+
+    @RequestMapping(value = "/user/{id}",method = RequestMethod.PUT)
+    public String update(@PathVariable("id") Integer id){
+        System.out.println("更新："+id);
+        return "success";
+    }
+
+    @RequestMapping(value = "/user/{id}",method = RequestMethod.GET)
+    public String query(@PathVariable("id") Integer id){
+        System.out.println("查询："+id);
+        return "success";
+    }
+}
+```
+
+###### 2.web.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <!--配置DispatcherServlet-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--关联springmvc的配置文件-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+        <!--   表示容器在启动时立即加载Servlet     -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <!--匹配servlet的请求，/标识匹配所有请求-->
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--/*和/都是拦截所有请求，/会拦截的请求不包含*.jsp,而/*的范围更大，还会拦截*.jsp这些请求-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+        <!--  需要新增一个过滤器  -->
+    <filter>
+        <filter-name>hiddenFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <!--  过滤所有  -->
+    <filter-mapping>
+        <filter-name>hiddenFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
+```
+
+###### 3.applicationContext.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--自动扫描包，由IOC容器进行控制管理-->
+    <context:component-scan base-package="cn.yurb"></context:component-scan>
+
+    <!--视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--配置前缀-->
+        <property name="prefix" value="/"></property>
+        <!--配置后缀-->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+</beans>
+```
+
+###### 4.新增rest.jsp页面来进行请求
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<form action="/user" method="post">
+    <input type="submit" value="增加">
+</form>
+<form action="/user/1" method="post">
+    <!-- name和type的值固定，value为对应类型，不区分大小写 -->
+    <input name="_method" value="delete" type="hidden">
+    <input type="submit" value="删除">
+</form>
+<form action="/user/1" method="post">
+    <!-- name和type的值固定，value为对应类型，不区分大小写 -->
+    <input name="_method" value="put" type="hidden">
+    <input type="submit" value="修改">
+</form>
+<a href="/user/1">查询</a><br/>
+</body>
+</html>
+```
+
+### 8.SpringMVC的请求处理
+
+#### 1.数据响应
+
+##### 1.1 数据响应的方式
+
+###### 页面跳转
+
+```
+1.直接返回字符串
+2.通过ModelAndView对象返回
+```
+
+###### 回写数据
+
+```
+1.直接返回字符串
+2.返回对象或集合    
+```
+
+##### 1.2 页面跳转
+
+###### 1.2.1 返回字符串形式
+
+![SpringMVC数据响应-页面跳转-返回字符串形式](G:\GitResp\java\note\SSM\SpringMVC数据响应-页面跳转-返回字符串形式.jpg)
+
+###### 1.2.2 返回字符串形式--转发forward
+
+```java
+@Controller
+public class ForWardController {
+
+    /**
+     * 当使用转发的时候可以添加前缀forward:index.jsp,此时是不会经过视图解析器的，所以要添加完整的名称
+     *
+     * forward:也可以由一个请求跳转到另外一个请求
+     *
+     * @return
+     */
+    @RequestMapping("/forward01")
+    public String forward(){
+        System.out.println("1");
+        return "forward:/index.jsp";
+    }
+
+    @RequestMapping("/forward02")
+    public String forward2(){
+        System.out.println("2");
+        return "forward:/forward01";
+    }
+}
+```
+
+###### 1.2.3 返回字符串形式--重定向 redirect
+
+```java
+@Controller
+public class RedirectController {
+
+
+    /**
+     * redirect :重定向的路径
+     *      相当于 response.sendRedirect("index.jsp")
+     *      跟视图解析器无关
+     * @return
+     */
+    @RequestMapping("redirect")
+    public String redirect(){
+        System.out.println("redirect");
+        return "redirect:/index.jsp";
+    }
+
+    @RequestMapping("/redirect2")
+    public String redirect2(){
+        System.out.println("redirect2");
+        return "redirect:/redirect";
+    }
+}
+```
+
+###### 1.2.4 ModelAndView对象形式1
+
+在Controller中方法返回ModelAndView对象，并且设置视图名称。
+
+```java
+@RequestMapping(value="/hello")
+public ModelAndView hello(){
+    /*
+		Model:模型 作用封装数据
+        View：视图 作用展示数据
+    */
+    ModelAndView modelAndView = new ModelAndView();
+    //设置模型数据
+    modelAndView.addObject("username","itcast");
+    //设置视图名称
+    modelAndView.setViewName("success");
+
+    return modelAndView;
+}
+```
+
+###### 1.2.5 ModelAndView对象形式2
+
+在Controller中方法形参上直接声明ModelAndView，无需在方法中自己创建。
+
+```java
+@RequestMapping(value="/hello")
+public ModelAndView hello(ModelAndView modelAndView){
+    modelAndView.addObject("username","itheima");
+    modelAndView.setViewName("success");
+    return modelAndView;
+}
+```
+
+###### 1.2.6 使用Model,Map,ModelMap传输数据到页面
+
+```java
+@RequestMapping("output1")
+public String output1(Model model){
+    model.addAttribute("msg","hello,Springmvc");
+    return "output";
+}
+
+@RequestMapping("output2")
+public String output2(ModelMap model){
+    model.addAttribute("msg","hello,Springmvc");
+    return "output";
+}
+
+@RequestMapping("output3")
+public String output1(Map map){
+    map.put("msg","hello,Springmvc");
+    return "output";
+}
+```
+
+###### 1.2.7 使用原生的API
+
+```java
+@RequestMapping("api")
+public String api(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+    request.setAttribute("requestParam","request");
+    session.setAttribute("sessionParam","session");
+    return "success";
+}
+```
+
+###### 1.2.8 使用session传输数据到页面
+
+@SessionAttribute：此注解可以表示，当向request作用域设置数据的时候同时也要向session中保存一份,此注解有两个参数，一个value（表示将哪些值设置到session中），另外一个type（表示按照类型来设置数据，一般不用，因为有可能会将很多数据都设置到session中，导致session异常）。
+
+```java
+@Controller
+@SessionAttributes(value = "msg")
+public class OutputController {
+
+    @RequestMapping("output1")
+    public String output1(Model model){
+        model.addAttribute("msg","hello,Springmvc");
+        System.out.println(model.getClass());
+        return "output";
+    }
+}
+```
+
+
+
+##### 1.3 回写数据
+
+###### 1.3.1 直接回写字符串
+
+```java
+//将需要回写的字符串直接返回，但此时需要通过@ResponseBody注解告知SpringMVC框架，方法返回的字符串不是跳转是直接在http响应体中返回
+@RequestMapping(value="/hello1")
+@ResponseBody  //告知SpringMVC框架 不进行视图跳转 直接进行数据响应
+public String hello1() throws IOException {
+    return "hello itheima";
+}
+
+//通过SpringMVC框架注入的response对象，使用response.getWriter().print(“hello world”) 回写数据，此时不需要视图跳转，业务方法返回值为void
+@RequestMapping(value="/hello2")
+public void hello2(HttpServletResponse response) throws IOException {
+    response.getWriter().print("hello itcast");
+}
+```
+
+###### 1.3.2 回写json格式字符串
+
+```java
+@RequestMapping(value="/hello")
+@ResponseBody
+public String hello() throws IOException {
+    User user = new User();
+    user.setUsername("lisi");
+    user.setAge(30);
+    //使用json的转换工具将对象转换成json格式字符串在返回
+    //ObjectMapper()需要jackson-databind依赖
+    ObjectMapper objectMapper = new ObjectMapper();
+    String json = objectMapper.writeValueAsString(user);
+
+    return json;
+}
+```
+
+###### 1.3.3 SringMVC集成对象或集合json格式的自动转换--xml
+
+在applicationContext.xml文件下添加如下：
+
+```xml
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+```
+
+###### 1.3.4 SringMVC集成对象或集合json格式的自动转换--注解
+
+在applicationContext.xml文件下添加如下：
+
+```xml
+<mvc:annotation-driven/>
+```
+
+不过需要先导入mvc的命名空间：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+       
+
+</beans>  
+```
+
+#### 2.请求参数的处理
+
+##### 2.1 基本参数类型
+
+```java
+/*
+	Controller中的业务方法的参数名称要与请求参数的name一致，参数值会自动映射匹配。并且能自动做类型转换；
+	自动的类型转换是指从String向其他类型的转换。
+	http://localhost:8080/hello?username=zhangsan&age=12
+*/
+@RequestMapping(value="/hello")
+@ResponseBody
+public void hello(String username,int age) throws IOException {
+    System.out.println(username);
+    System.out.println(age);
+}
+```
+
+##### 2.2 POJO类型
+
+```java
+//POJO类
+public class User {
+    private String name;
+    private int age;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+```java
+/*
+	Controller中的业务方法的POJO参数的属性名与请求参数的name一致，参数值会自动映射匹配。
+	http://localhost:8080/hello?username=zhangsan&age=12
+*/
+@RequestMapping(value="/hello")
+@ResponseBody
+public void hello(User user) throws IOException {
+    System.out.println(user);
+}
+```
+
+##### 2.3 数组类型
+
+```java
+/*
+	Controller中的业务方法数组名称与请求参数的strs一致，参数值会自动映射匹配。
+	http://localhost:8012/arr?strs=12&strs=34
+*/
+@RequestMapping(value="/hello")
+@ResponseBody
+public void hello(String[] strs) throws IOException {
+    System.out.println(Arrays.asList(strs));
+}
+```
+
+##### 2.4 集合参数类型
+
+获得集合参数时，要将集合参数包装到一个POJO中才可以。
+
+```jsp
+<form action="${pageContext.request.contextPath}/hello" method="post">
+        <%--表明是第一个User对象的name age--%>
+        <input type="text" name="userList[0].name"><br/>
+        <input type="text" name="userList[0].age"><br/>
+        <input type="text" name="userList[1].name"><br/>
+        <input type="text" name="userList[1].age"><br/>
+        <input type="submit" value="提交">
+    </form>
+```
+
+```java
+package com.itheima.domain;
+
+import java.util.List;
+
+public class VO {
+
+    private List<User> userList;
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
+
+    @Override
+    public String toString() {
+        return "VO{" +
+                "userList=" + userList +
+                '}';
+    }
+}
+
+```
+
+```java
+@RequestMapping(value="/hello")
+@ResponseBody
+public void hello(VO vo) throws IOException {
+    System.out.println(vo);
+}
+```
+
+##### 2.5 ajax请求发送集合类型数据
+
+当使用ajax提交时，可以指定contentType为json形式，那么在方法参数位置使用@RequestBody可以直接接收集合数据而无需使用POJO进行包装
+
+```jsp
+<script src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+    <script>
+        var userList = new Array();
+        userList.push({username:"zhangsan",age:18});
+        userList.push({username:"lisi",age:28});
+
+        $.ajax({
+            type:"POST",
+            url:"${pageContext.request.contextPath}/hello",
+            data:JSON.stringify(userList),
+            contentType:"application/json;charset=utf-8"
+        });
+
+    </script>
+```
+
+```java
+@RequestMapping(value="/hello")
+@ResponseBody
+public void hello(@RequestBody List<User> userList) throws IOException {
+    System.out.println(userList);
+}
+```
+
+##### 2.6 参数绑定注解@RequestParam
+
+```java
+@Controller
+public class RequestController {
+
+    /**
+     * 如何获取SpringMVC中请求中的信息
+     *  默认情况下，可以直接在方法的参数中填写跟请求一样的名称，此时会默认接受参数
+     *      如果有值，直接赋值，如果没有，那么直接给空值
+     *
+     * @RequestParam:获取请求中的参数值,使用此注解之后，参数的名称不需要跟请求的名称一致，但是必须要写
+     *      public String request(@RequestParam("user") String username){
+     *
+     *      此注解还包含三个参数：
+     *      value:表示要获取的参数值
+     *      required：表示此参数是否必须，默认是true，如果不写参数那么会报错，如果值为false，那么不写参数不会有任何错误
+     *      defaultValue:如果在使用的时候没有传递参数，那么定义默认值即可
+     *
+     *
+     * @param username
+     * @return
+     */
+    @RequestMapping("/request")
+    public String request(@RequestParam(value = "user",required = false,defaultValue = "hehe") String username){
+        System.out.println(username);
+        return "success";
+    }
+}
+```
+
+##### 2.7 获得请求头信息@RequestHeader
+
+```java
+@Controller
+public class RequestController {
+
+    /**
+     * 如果需要获取请求头信息该如何处理呢？
+     *  可以使用@RequestHeader注解，
+     *      public String header(@RequestHeader("User-Agent") String agent){
+     *      相当于  request.getHeader("User-Agent")
+     *
+     *      如果要获取请求头中没有的信息，那么此时会报错，同样，此注解中也包含三个参数,跟@RequestParam一样
+     *          value
+     *          required
+     *          defalutValue
+     * @param agent
+     * @return
+     */
+    @RequestMapping("/header")
+    public String header(@RequestHeader("User-Agent") String agent){
+        System.out.println(agent);
+        return "success";
+    }
+}
+```
+
+##### 2.8 获得Cookie值@CookieValue
+
+```java
+@Controller
+public class RequestController {
+
+    /**
+     * 如果需要获取cookie信息该如何处理呢？
+     *  可以使用@CookieValue注解，
+     *      public String cookie(@CookieValue("JSESSIONID") String id){
+     *      相当于
+     *      Cookie[] cookies = request.getCookies();
+     *      for(Cookie cookie : cookies){
+     *          cookie.getValue();
+     *      }
+     *      如果要获取cookie中没有的信息，那么此时会报错，同样，此注解中也包含三个参数,跟@RequestParam一样
+     *          value
+     *          required
+     *          defalutValue
+     * @param id
+     * @return
+     */
+    @RequestMapping("/cookie")
+    public String cookie(@CookieValue("JSESSIONID") String id){
+        System.out.println(id);
+        return "success";
+    }
+}
+```
+
+##### 2.9 获得Servlet相关API
+
+SpringMVC支持使用原始ServletAPI对象作为控制器方法的参数进行注入，常用的对象如下：
+
+HttpServletRequest
+
+HttpServletResponse
+
+HttpSession
+
+```java
+@RequestMapping(value="/quick19")
+    @ResponseBody
+    public void save19(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        System.out.println(request);
+        System.out.println(response);
+        System.out.println(session);
+    }
+```
+
+##### 2.10 @RequestBody
+
+​	主要用来接收前端传递给后端的json字符串中的数据的(请求体中的数据的)；GET方式无请求体，所以使用@RequestBody接收数据时，前端不能使用GET方式提交数据，而是用POST方式进行提交。在后端的同一个接收方法里，@RequestBody与@RequestParam()可以同时使用，@RequestBody最多只能有一个，而@RequestParam()可以有多个。
+
+https://blog.csdn.net/justry_deng/article/details/80972817
+
+##### 2.11 @RespsonseEntity定制相应内容
+
+```java
+@Controller
+public class OtherController {
+
+    @RequestMapping("/testResponseEntity")
+    public ResponseEntity<String> testResponseEntity(){
+
+        String body = "<h1>hello</h1>";
+        MultiValueMap<String,String> header = new HttpHeaders();
+        header.add("Set-Cookie","name=zhangsan");
+        return  new ResponseEntity<String>(body,header, HttpStatus.OK);
+    }
+}
+```
+
+#### 3.乱码问题的解决
+
+##### GET请求
+
+```xml
+在tomcat的server.xml里把
+
+<Connector connectionTimeout="50000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+
+修改为
+
+<Connector connectionTimeout="50000" port="8080" protocol="HTTP/1.1" redirectPort="8443" URIEncoding="UTF-8"/>
+```
+
+##### POST请求
+
+在web.xml里新增一个过滤器来进行编码的过滤。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <!--配置DispatcherServlet-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--关联springmvc的配置文件-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+        <!--   表示容器在启动时立即加载Servlet     -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <!--匹配servlet的请求，/标识匹配所有请求-->
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--/*和/都是拦截所有请求，/会拦截的请求不包含*.jsp,而/*的范围更大，还会拦截*.jsp这些请求-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+        <!--  解决POST乱码问题，该filter要放在其他filter的前面  -->
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <!--解决post请求乱码-->
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <!--解决响应乱码-->
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    
+    <!--  REST风格代码需要新增一个过滤器  -->
+    <filter>
+        <filter-name>hiddenFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <!--  过滤所有  -->
+    <filter-mapping>
+        <filter-name>hiddenFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+</web-app>
+
+```
+
+#### 4.静态资源的访问
+
+​	SpringMVC的前端控制器DispatcherServlet的url-pattern配置的是/，会拦截所有的请求，而此时我们没有对应图片的请求处理方法。
+
+通过以下两种方式指定放行静态资源：
+
+•在spring-mvc.xml配置文件中指定放行的资源
+
+​     `<mvc:resources mapping="/js/**"location="/js/"/> `
+
+•使用`<mvc:default-servlet-handler/>`标签
+
+```xml
+<!--
+此配置表示  我们自己配置的请求由controller来处理，但是不能请求的处理交由tomcat来处理
+静态资源可以访问，但是动态请求无法访问
+-->
+<mvc:default-servlet-handler/>
+```
+
+​	如果发现还是不行，需要再添加另外的配置：
+
+```xml
+<!--保证静态资源和动态请求都能够访问-->
+<mvc:annotation-driven/>
+```
+
+### 9.自定义视图解析器
+
+###### 1.编写视图处理器
+
+需要实现ViewReslover接口的resolveViewName方法 和 Ordered接口的 getOrder方法、setOrder方法。
+
+```java
+public class MyViewResolver implements ViewResolver, Ordered {
+    private int order = 0;
+    public View resolveViewName(String viewName, Locale locale) throws Exception {
+
+        //如果前缀是msb:开头的就进行解析
+        if (viewName.startsWith("msb:")){
+            System.out.println("msb:");
+            return new MyView();
+        }else{
+            //如果不是，则直接返回null,让别的视图解析器处理
+            return null;
+        }
+    }
+
+    //Order属性是指定解析器的优先级，数值越小，优先级越高
+    public int getOrder() {
+        return this.order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+}
+
+```
+
+###### 2.编写视图
+
+需要实现View接口的getContentType方法和render方法。
+
+```java
+public class MyView implements View {
+    @Override
+    public String getContentType() {
+        return "text/html";
+    }
+
+    @Override
+    public void render(Map<String, ?> map, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+        System.out.println("保存的对象是："+map);
+        httpServletResponse.setContentType("text/html");
+        //在这里渲染数据，取出map传入的值
+        PrintWriter out = httpServletResponse.getWriter();
+        out.write("<h3>精彩内容即将呈现...Loading</h3>");
+        List<Object> lists= (List<Object>) map.get("video");
+        out.write("<ul>");
+        for(Object object:lists){
+            out.write("<li><a href='download'>"+object+"</a></li>");
+        }
+        out.write("</ul>");
+    }
+}
+```
+
+###### 3.添加配置
+
+在applicationContext.xml文档中配置自定义的视图解析器,交给Spring IOC容器管理。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="cn.yurb"></context:component-scan>
+    
+    <!-- 默认的视图解析器InternalResourceViewResolver的优先级最低。 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/page/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    
+    <!-- 自定义视图解析器的路径，及设置Order属性值，order的数值越小，优先级越高 -->
+    <bean class="cn.yurb.view.MyViewResolver">
+        <property name="order" value="1"></property>
+    </bean>
+</beans>
+```
+
+###### 4.编写控制器
+
+```java
+@Controller
+public class MyViewController {
+    @RequestMapping("myview")
+    public String myView(Model model){
+        List<String> vnames=new ArrayList<String>();
+        vnames.add("java疯狂讲义300集");
+        vnames.add("java从入门到如入土！！！");
+        vnames.add("Spring,SpringMVC从入门到放弃！！！");
+        vnames.add("MySql从删库到跑路！！！");
+        model.addAttribute("video",vnames);
+        return "msb:/index";
+    }
+}
+```
+
+### 10.自定义类型转换器
+
+###### 1.编写自定义类型转换类
+
+需要实现 Converter<S,T>接口。
+
+```java
+@Component
+public class MyConverter implements Converter<String, User> {
+
+    @Override
+    public User convert(String source) {
+        User user = new User();;
+        System.out.println("-----------------");
+        String[] split = source.split("-");
+        //要求就是参数的规范是 姓名-年龄
+        if (source!=null && split.length==2){
+            user.setName(split[0]);
+            user.setAge(Integer.parseInt(split[1]));
+        }
+        return user;
+    }
+}
+```
+
+###### 2.添加配置
+
+在applicationContext.xml文件中添加自定义类型转换器的配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--自动扫描包，由IOC容器进行控制管理-->
+    <context:component-scan base-package="cn.yurb"></context:component-scan>
+
+<!--  开启了注解这部分需要屏蔽掉  -->
+<!--    &lt;!&ndash;处理映射器&ndash;&gt;-->
+<!--    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"></bean>-->
+<!--    &lt;!&ndash;处理器适配器&ndash;&gt;-->
+<!--    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>-->
+
+    <!--视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--配置前缀-->
+        <property name="prefix" value="/"></property>
+        <!--配置后缀-->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+
+    <!-- 自定义视图解析器的路径，及设置Order属性值，order的数值越小，优先级越高 -->
+    <bean class="cn.yurb.view.MyViewResolver">
+        <property name="order" value="1"></property>
+    </bean>
+
+    <bean id="/first" class="cn.yurb.Controller.FirstController"></bean>
+
+    <!-- 自定义类型转换器 -->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="myConverter"></ref>
+            </set>
+        </property>
+    </bean>
+	<!-- 将我们自己的类型转换器添加到 set 集合，使用下面这个标签来使之生效-->
+    <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+
+</beans>
+```
+
+###### 3.编写控制器
+
+```java
+//HTTP访问地址：http://localhost:8012/userconvert?User=lisi-67
+
+@Controller
+public class UserConverter {
+
+    @RequestMapping("/userconvert")
+    //这里的类型一定要和传入的值类型匹配，否则不生效。
+    public String add(@RequestParam("User") User user, Model model){
+        System.out.println(user);
+        model.addAttribute("user","user");
+        return "index";
+    }
+}
+```
+
+### 11.自定义日期格式转换器
+
+​		有时候我们经常需要在页面添加日期等相关信息，此时需要制定日期格式化转换器，此操作非常简单：只需要在单独的属性上添加@DateTimeFormat注解即可，制定对应的格式
+
+###### 1.添加用户类
+
+User.java
+
+```java
+package com.mashibing.bean;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
+public class User {
+
+    private Integer id;
+    private String name;
+    private Integer age;
+    private String gender;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birth;
+
+    public User() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                ", birth=" + birth +
+                '}';
+    }
+}
+```
+
+###### 2.添加显示页面
+
+index.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+<form action="dateConvertion" method="post">
+  编号：<input type="text" name="id"><br>
+  姓名：<input type="text" name="name"><br>
+  年龄：<input type="text" name="age"><br>
+  性别：<input type="text" name="gender"><br>
+  日期：<input type="text" name="birth"><br>
+  <input type="submit" value="提交">
+</form>
+  </body>
+</html>
+
+```
+
+###### 3.添加日期格式转换控制器类
+
+DateConvertionController.java
+
+```java
+package com.mashibing.controller;
+
+import com.mashibing.bean.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class DateConvertionController {
+
+    @RequestMapping("dateConvertion")
+    public String dateConvertion(User user){
+        System.out.println(user);
+        return "hello";
+    }
+}
+```
+
+###### 4.添加配置
+
+applicationContext.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="com.mashibing"></context:component-scan>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/page/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <bean class="com.mashibing.view.MyViewResolver">
+        <property name="order" value="1"></property>
+    </bean>
+    <!--此配置表示  我们自己配置的请求由controller来处理，但是不能请求的处理交由tomcat来处理
+    静态资源可以访问，但是动态请求无法访问
+    -->
+    <mvc:default-servlet-handler/>
+    <!--保证静态资源和动态请求都能够访问-->
+    <mvc:annotation-driven></mvc:annotation-driven>
+</beans>
+```
+
+​		此时运行发现是没有问题的，但是需要注意的是，如果同时配置了自定义类型转换器之后，那么日期格式转化是有问题的。
+
+applicationContext.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="com.mashibing"></context:component-scan>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/page/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <bean class="com.mashibing.view.MyViewResolver">
+        <property name="order" value="1"></property>
+    </bean>
+    <!--此配置表示  我们自己配置的请求由controller来处理，但是不能请求的处理交由tomcat来处理
+    静态资源可以访问，但是动态请求无法访问
+    -->
+    <mvc:default-servlet-handler/>
+    <!--保证静态资源和动态请求都能够访问-->
+    <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="myConverter"></ref>
+            </set>
+        </property>
+    </bean>
+</beans>
+```
+
+​		原因就在于ConversionServiceFactoryBean对象中有且仅有一个属性converters，此时可以使用另外一个类来做替换FormattingConversionServiceFactoryBean
+
+applicationContext.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="com.mashibing"></context:component-scan>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/page/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <bean class="com.mashibing.view.MyViewResolver">
+        <property name="order" value="1"></property>
+    </bean>
+    <!--此配置表示  我们自己配置的请求由controller来处理，但是不能请求的处理交由tomcat来处理
+    静态资源可以访问，但是动态请求无法访问
+    -->
+    <mvc:default-servlet-handler/>
+    <!--保证静态资源和动态请求都能够访问-->
+<!--    <mvc:annotation-driven></mvc:annotation-driven>-->
+    <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="myConverter"></ref>
+            </set>
+        </property>
+    </bean>
+</beans>
+```
+
+### 12.数据校验
+
+​		一般情况下我们会在前端页面实现数据的校验，但是大家需要注意的是前端校验会存在数据的不安全问题，因此一般情况下我们都会使用前端校验+后端校验的方式，这样的话既能够满足用户的体验度，同时也能保证数据的安全，下面来说一下在springmvc中如何进行后端数据校验。
+
+​		JSR303是 Java 为 Bean 数据合法性校验提供的标准框架，它已经包含在 JavaEE 6.0 中 。JSR 303 (Java Specification Requests意思是Java 规范提案)通过**在** **Bean** **属性上标注**类似于 @NotNull、@Max 等标准的注解指定校验规则，并通过标准的验证接口对 Bean 进行验证。
+
+JSR303:
+
+![](C:\Users\YuRB\Desktop\java-master\java-master\javaframework\springmvc\04SpringMVC的基本使用3\image\JSR303.png)
+
+Hibernate Validator 扩展注解:
+
+![](C:\Users\YuRB\Desktop\java-master\java-master\javaframework\springmvc\04SpringMVC的基本使用3\image\hibernate.png)
+
+###### 1.导入依赖
+
+​	spring中拥有自己的数据校验框架，同时支持JSR303标准的校验框架，可以在通过添加注解的方式进行数据校验。在spring中本身没有提供JSR303的实现，需要导入依赖的包。
+
+pom.xml
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+<!-- 高版本可能不兼容，推荐使用5版本及以下 -->
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>5.1.0.Final</version>
+</dependency>
+```
+
+###### 2.添加请求页面
+
+index.jsp
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: root
+  Date: 2020/3/12
+  Time: 15:23
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+<form action="dataValidate" method="post">
+  编号：<input type="text" name="id"><br>
+  姓名：<input type="text" name="name"><br>
+  年龄：<input type="text" name="age"><br>
+  性别：<input type="text" name="gender"><br>
+  日期：<input type="text" name="birth"><br>
+  邮箱：<input type="text" name="email"><br>
+  <input type="submit" value="提交">
+</form>
+  </body>
+</html>
+
+```
+
+###### 3.添加用户类
+
+User2.java
+
+```java
+package cn.yurb.domain;
+
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+
+import java.util.Date;
+
+public class User2 {
+
+    private Integer id;
+    @NotNull
+    @Length(min = 5,max = 10)
+    private String name;
+    private Integer age;
+    private String gender;
+    @Past
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birth;
+    @Email
+    private String email;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                ", birth=" + birth +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+
+}
+```
+
+###### 4.添加数据校验控制器类
+
+DataValidateController.java
+
+```java
+import javax.validation.Valid;
+
+@Controller
+public class DataValidateController {
+    @RequestMapping("/dataValidate")
+    /*
+    	在方法上，对属性标上 @Valid 注解，表示我们对这个对象属性需要进行验证。
+    	直接添加一个BindingResult，用来存放验证结果。
+    */
+    public String validate(@Valid User user, BindingResult bindingResult) {
+        System.out.println(user);
+        if (bindingResult.hasErrors()) {
+            System.out.println("验证失败");
+            return "redirect:/index.jsp";
+        } else {
+            System.out.println("验证成功");
+            return "hello";
+        }
+    }
+}
+```
+
+###### 5.优化
+
+在报错的地方无法出现错误提示，可以换另外一种方式：
+
+index.jsp
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+<a href="add">添加用户</a>
+
+  </body>
+</html>
+
+```
+
+add.jsp
+
+```jsp
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>$Title$</title>
+</head>
+<body>
+<!-- 设置modelAttribute=”customer”，它的属性值，必须为小写的类型名 -->
+<form:form action="dataValidate"  modelAttribute="user2" method="post">
+    id:<form:input path="id"></form:input><form:errors path="id"></form:errors> <br/>
+    name:<form:input path="name"></form:input><form:errors path="name"></form:errors><br/>
+    age:<form:input path="age"></form:input><form:errors path="age"></form:errors><br/>
+    gender:<form:input path="gender"></form:input><form:errors path="gender"></form:errors><br/>
+    birth:<form:input path="birth"></form:input><form:errors path="birth"></form:errors><br/>
+    email:<form:input path="email"></form:input><form:errors path="email"></form:errors><br/>
+    <input type="submit" value="submit">
+</form:form>
+</body>
+</html>
+
+```
+
+DataValidateController.java
+
+```java
+package com.mashibing.controller;
+
+import com.mashibing.bean.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+
+
+@Controller
+public class DataValidateController {
+    @RequestMapping("/dataValidate")
+    public String validate(@Valid User2 user, BindingResult bindingResult, Model model) {
+        System.out.println(user);
+        if (bindingResult.hasErrors()) {
+            System.out.println("验证失败");
+            return "add";
+        } else {
+            System.out.println("验证成功");
+            return "hello";
+        }
+    }
+
+    @RequestMapping("add")
+    public String add(Model model){
+        model.addAttribute("user2",new User(1,"zhangsan",12,"女",null,"1234@qq.com"));
+        return "add";
+    }
+}
+```
+
+web.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:springmvc.xml</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springmvc.xml</param-value>
+        </init-param>
+        
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <filter-name>encoding</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encoding</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
+```
+
+###### 6.表单回显错误信息：
+
+DataValidateController.java
+
+```java
+package com.mashibing.controller;
+
+import com.mashibing.bean.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+@Controller
+public class DataValidateController {
+    @RequestMapping("/dataValidate")
+    public String validate(@Valid User2 user, BindingResult bindingResult, Model model) {
+        System.out.println(user);
+        Map<String,Object> errorsMap = new HashMap<String, Object>();
+        if (bindingResult.hasErrors()) {
+            System.out.println("验证失败");
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                System.out.println(fieldError.getDefaultMessage());
+                System.out.println(fieldError.getField());
+                errorsMap.put(fieldError.getField(),fieldError.getDefaultMessage());
+            }
+            model.addAttribute("errorInfo",errorsMap);
+            return "add";
+        } else {
+            System.out.println("验证成功");
+            return "hello";
+        }
+    }
+
+    @RequestMapping("add")
+    public String add(Model model){
+        model.addAttribute("user2",new User(1,"zhangsan",12,"女",null,"1234@qq.com"));
+        return "add";
+    }
+}
+```
+
+add.jsp
+
+```jsp
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>$Title$</title>
+</head>
+<body>
+<!-- 设置modelAttribute=”customer”，它的属性值，必须为小写的类型名 -->
+<form:form action="dataValidate"  modelAttribute="user2" method="post">
+    编号:<form:input path="id"></form:input><form:errors path="id"></form:errors>--->${errorInfo.id} <br/>
+    姓名:<form:input path="name"></form:input><form:errors path="name"></form:errors>--->${errorInfo.name}<br/>
+    年龄:<form:input path="age"></form:input><form:errors path="age"></form:errors>--->${errorInfo.age}<br/>
+    性别:<form:input path="gender"></form:input><form:errors path="gender"></form:errors>--->${errorInfo.gender}<br/>
+    生日:<form:input path="birth"></form:input><form:errors path="birth"></form:errors>--->${errorInfo.birth}<br/>
+    邮箱:<form:input path="email"></form:input><form:errors path="email"></form:errors>--->${errorInfo.email}<br/>
+    <input type="submit" value="submit">
+</form:form>
+</body>
+</html>
+```
+
+### 13.文件下载
+
+```java
+@Controller
+public class OtherController {
+
+    @RequestMapping("/download")
+    public ResponseEntity<byte[]> download(HttpServletRequest request) throws Exception {
+        //获取要下载文件的路径及输入流对象
+        ServletContext servletContext = request.getServletContext();
+        String realPath = servletContext.getRealPath("/script/jquery-1.9.1.min.js");
+        FileInputStream fileInputStream = new FileInputStream(realPath);
+
+        byte[] bytes = new byte[fileInputStream.available()];
+        fileInputStream.read(bytes);
+        fileInputStream.close();
+        //将要下载文件内容返回
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Content-Disposition","attachment;filename=jquery-1.9.1.min.js");
+        return  new ResponseEntity<byte[]>(bytes,httpHeaders,HttpStatus.OK);
+    }
+}
+
+```
+
+### 
